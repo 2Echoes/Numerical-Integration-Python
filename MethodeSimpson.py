@@ -1,7 +1,3 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from math import sin,pi
-
 def Meth_Simpson(f,a,b,N): #f la fonction à intégrer, a la borne inf, b la borne sup et N le nb de pts d'integration
     h = (b-a)/N
     res = f(a)+f(b)
@@ -14,32 +10,24 @@ def Meth_Simpson(f,a,b,N): #f la fonction à intégrer, a la borne inf, b la bor
 def error_Simpson(f,a,b,N): # Renvoie l'erreur commise pour la Meth_Simpson avec N points, f la fction, a et b les bornes inf et sup
     return (1/15)*(Meth_Simpson(f,a,b,N)-Meth_Simpson(f,a,b,int(N/2))) #préférable d'avoir N pair
 
-def g(x):
-    return x**2*sin(x)
+def Meth_Simpson_adapt(f,a,b,delta): #Intégration avec la méthode de Simpson où delta est la marge d'erreur maximale
+    N=1000
+    error=1.0E38 # Initialisation à l'infini
+    I1 = Meth_Simpson(f,a,b,N)
+    while error>delta:
+        N*=2
+        h=(b-a)/N
+        I2=(I1/2)*(3/h)
+        for i in range(1,N,2):
+            I2+=f(a+i*h)
+        I2*=h/3
+        error=abs((1/15)*(I2-I1))
+        print(error)
+        I1=I2
+    return I2
 
-""" N=1000
-res=Meth_Simpson(g,0,pi,N)
-print('I2 = ',res)    #il faut trouver 5.86
-print('I = ',pi**2-4)
-print('erreur estimée ',error_Simpson(g,0,pi,N))
-print('erreur réelle ', pi**2-4-res) """
+from math import sin,pi
+def g(c):
+    return c**2*sin(c)
 
-""" X=[]
-estim=[]
-reelle=[]
-
-for n in range(100,101,1):
-    X+=[n]
-    res=Meth_Simpson(g,0,pi,n)
-    estim+=[error_Simpson(g,0,pi,n)]
-    reelle+=[pi**2-4-res]
-
-plt.figure('figsize=(8,8)')
-# erreur_estimee=plt.plot(X,estim,'--g')
-# plt.legend('erreur estimée')
-erreur_reelle=plt.plot(X,reelle,'--r')
-plt.legend('erreur reelle')
-plt.xlabel("Nombre de points d'intégration (N)")
-plt.ylabel("Erreur")
-plt.title('Intégrale x²sin(x) de 0 à pi')
-plt.show() """
+print(Meth_Simpson(g,0,pi,1000),'\n',pi**2-4)

@@ -1,5 +1,3 @@
-from math import sin,pi
-
 """ Dans la suite, f est la fonction à int
 a et b les bornes respectivement inférieures et supérieures de l'intégrale
 N est le nombre de pts d'intégration
@@ -23,7 +21,6 @@ def int_trapez_adapt(f,a,b,delta):
         h=(b-a)/N
         I2 = I1/(2*h)
         for i in range(1,N,2):
-            # print('i = ',i," I2 = ",I2)
             xk=a+i*h
             I2+=f(xk)
         I2*=h   
@@ -31,12 +28,3 @@ def int_trapez_adapt(f,a,b,delta):
         print(error)
         I1=I2
     return I2
-
-
-
-def f(x):
-    return x**2*sin(x)
-
-print(int_trapez_adapt(f,0,pi,1.0E-12))
-print(pi**2-4)
-

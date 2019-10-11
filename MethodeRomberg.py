@@ -1,2 +1,2 @@
-from MethodeTrapezes import int_trapez:
+from MethodeTrapezes import int_trapez_adapt
 
