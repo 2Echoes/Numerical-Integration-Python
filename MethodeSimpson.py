@@ -9,6 +9,7 @@ def Meth_Simpson(fonction,borne_min,borne_max,nb_intpoints):
     return res
 
 def Simpson_iteration(fonction,borne_min,borne_max,int_point):
+    #Calcul la valeur de l'integral par la methode de Simpson pour un nbre de points = int_point, equivalent à Meth_Simpson sur le resultat
     Int = fonction(borne_min) + fonction(borne_max)
     step = (borne_max-borne_min)/int_point
     correction = 0
@@ -18,7 +19,8 @@ def Simpson_iteration(fonction,borne_min,borne_max,int_point):
         correction += fonction(curr_point)
     Int*=1/3
     correction*=2/3
-    return (Int,correction)
+    compvalue= step*(Int+2*correction)
+    return compvalue
 
 
 def Meth_Simpson_adapt(fonction,borne_min,borne_max,delta): 
@@ -26,20 +28,11 @@ def Meth_Simpson_adapt(fonction,borne_min,borne_max,delta):
     int_point=1000
     error=1.0E38 # Initialisation à l'infini
     step=(borne_max-borne_min)/int_point
-    Int, correction = Simpson_iteration(fonction,borne_min,borne_max,int_point)
-    compvalue1 = step*(Int+2*correction)
+    compvalue1 = Simpson_iteration(fonction,borne_min,borne_max,int_point)
     while error>delta:
         int_point*=2
         step/=2
-        Int, correction = Simpson_iteration(fonction,borne_min,borne_max,int_point)
-        compvalue2 = step*(Int+2*correction)
+        compvalue2 = Simpson_iteration(fonction,borne_min,borne_max,int_point)
         error=abs((1/15)*(compvalue2-compvalue1))
-        # print(Int2-Int1 , error)
         compvalue1=compvalue2
     return compvalue2
-
-from math import sin,pi
-def g(c):
-    return c**2*sin(c)
-
-print(Meth_Simpson_adapt(g,0,pi,1.0E-6),'\n',pi**2-4)
