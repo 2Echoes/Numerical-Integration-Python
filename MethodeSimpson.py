@@ -8,26 +8,35 @@ def Meth_Simpson(fonction,borne_min,borne_max,nb_intpoints):
     res*=step/3
     return res
 
-def error_Simpson(f,a,b,N): 
-    # Renvoie l'erreur commise pour la Meth_Simpson avec N points, f la fction, a et b les bornes inf et sup
-    return (1/15)*(Meth_Simpson(f,a,b,N)-Meth_Simpson(f,a,b,int(N/2))) #préférable d'avoir N pair
+def Simpson_iteration(fonction,borne_min,borne_max,int_point):
+    Int = fonction(borne_min) + fonction(borne_max)
+    step = (borne_max-borne_min)/int_point
+    correction = 0
+    for i in range(1,int_point,2):
+        curr_point = borne_min+i*step
+        Int +=2*fonction(curr_point+step)
+        correction += fonction(curr_point)
+    Int*=1/3
+    correction*=2/3
+    return (Int,correction)
 
-def Meth_Simpson_adapt(f,a,b,delta): 
+
+def Meth_Simpson_adapt(fonction,borne_min,borne_max,delta): 
     #Intégration avec la méthode de Simpson où delta est la marge d'erreur maximale
-    N=1000
+    int_point=1000
     error=1.0E38 # Initialisation à l'infini
-    I1 = Meth_Simpson(f,a,b,N)
+    step=(borne_max-borne_min)/int_point
+    Int, correction = Simpson_iteration(fonction,borne_min,borne_max,int_point)
+    compvalue1 = step*(Int+2*correction)
     while error>delta:
-        N*=2
-        h=(b-a)/N
-        I2=(I1/2)*3/(2*h)
-        for i in range(1,N,2):
-            I2+=f(a+i*h)
-        I2*=h/3
-        error=abs((1/15)*(I2-I1))
-        print(error)
-        I1=I2
-    return I2
+        int_point*=2
+        step/=2
+        Int, correction = Simpson_iteration(fonction,borne_min,borne_max,int_point)
+        compvalue2 = step*(Int+2*correction)
+        error=abs((1/15)*(compvalue2-compvalue1))
+        # print(Int2-Int1 , error)
+        compvalue1=compvalue2
+    return compvalue2
 
 from math import sin,pi
 def g(c):
