@@ -19,7 +19,7 @@ def int_trapez_adapt(f,a,b,delta):
     while error>delta:
         N*=2
         h=(b-a)/N
-        I2 = I1/(2*h)
+        I2 = I1/(2*2*h)
         for i in range(1,N,2):
             xk=a+i*h
             I2+=f(xk)
